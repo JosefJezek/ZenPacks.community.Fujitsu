@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
+        xmlns:zcml="http://namespaces.zope.org/zcml">
+        <configure zcml:condition="installed Products.Zuul">
+
+            <include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
+
+
+            <!-- ZenPack Info -->
+
+            <browser:directRouter
+                name="Fujitsu_router"
+                for="*"
+                class="ZenPacks.community.Fujitsu.routers.FujitsuRouter"
+                namespace="Zenoss.remote"
+                permission="zenoss.View"
+            />
+    
+            <adapter
+                name="FujitsuAdapter"
+                provides="ZenPacks.community.Fujitsu.interfaces.IFujitsuFacade"
+                for="*"
+                factory="ZenPacks.community.Fujitsu.facades.FujitsuFacade"
+            />
+                
+            <browser:resourceDirectory
+                    name="Fujitsu"
+                    directory="resources"
+            />
+
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.Fujitsu.info.FujitsuLogicalDiskInfo"
+                for="ZenPacks.community.Fujitsu.FujitsuLogicalDisk.FujitsuLogicalDisk"
+                provides="ZenPacks.community.Fujitsu.interfaces.IFujitsuLogicalDiskInfo"
+            />
+    
+            <browser:viewlet
+                name="js-FujitsuLogicalDisk"
+                paths="/++resource++Fujitsu/fujitsulogicaldisk.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
+
+            <utility provides="zope.schema.interfaces.IVocabularyFactory"
+                component=".info.FujitsuLogicalDiskgetEventClassesVocabulary"
+                name="FujitsuLogicalDiskgetEventClasses"
+            />
+
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.Fujitsu.info.FujitsuHardDiskInfo"
+                for="ZenPacks.community.Fujitsu.FujitsuHardDisk.FujitsuHardDisk"
+                provides="ZenPacks.community.Fujitsu.interfaces.IFujitsuHardDiskInfo"
+            />
+    
+            <browser:viewlet
+                name="js-FujitsuHardDisk"
+                paths="/++resource++Fujitsu/fujitsuharddisk.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
+
+            <utility provides="zope.schema.interfaces.IVocabularyFactory"
+                component=".info.FujitsuHardDiskgetEventClassesVocabulary"
+                name="FujitsuHardDiskgetEventClasses"
+            />
+
+        </configure>
+    </configure>
+
