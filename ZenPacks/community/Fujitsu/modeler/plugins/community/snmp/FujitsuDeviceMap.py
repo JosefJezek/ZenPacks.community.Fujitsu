@@ -18,9 +18,10 @@ class FujitsuDeviceMap(SnmpPlugin):
 
         manufacturer = 'Fujitsu'
         getdata, tabledata = results
-        model = getdata.get('modelName', 'Unknown')
-        serialNumber = getdata.get('serialNumber', 'Unknown')
-        osVersion = getdata.get('osVersion', 'Unknown')
+
+        model = getdata.get('modelName', 'Unknown') or 'Unknown'
+        serialNumber = getdata.get('serialNumber', 'Unknown') or 'Unknown'
+        osVersion = getdata.get('osVersion', 'Unknown') or 'Unknown'
 
         hw_om = ObjectMap(compname='hw', data={
             'setProductKey': MultiArgs(model, manufacturer),
@@ -32,9 +33,11 @@ class FujitsuDeviceMap(SnmpPlugin):
             manufacturer = 'Linux'
         else:
             manufacturer = 'Unknown'
-        
+
         os_om = ObjectMap(compname='os', data={
             'setProductKey': MultiArgs(osVersion, manufacturer),
         })
+
+        log.debug('om: %s, %s' % (hw_om, os_om))
 
         return [hw_om, os_om]

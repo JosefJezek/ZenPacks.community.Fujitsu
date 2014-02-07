@@ -20,7 +20,6 @@ class FujitsuLogicalDiskMap(SnmpPlugin):
     
     snmpEntryName = 'svrLogicalDriveTable'
     snmpEntryOID = '.1.3.6.1.4.1.231.2.49.1.6.2.1'
-    snmpTitleName = 'svrLogicalDriveDisplayName'
     
     snmpGetTableMaps = (
         GetTableMap(snmpEntryName, snmpEntryOID, {
@@ -31,7 +30,7 @@ class FujitsuLogicalDiskMap(SnmpPlugin):
             '.14': 'osName', # svrLogicalDriveOSDeviceName
             '.15': 'readMode', # svrLogicalDriveReadMode
             '.17': 'cacheMode', # svrLogicalDriveDiskCacheMode
-            '.20': snmpTitleName,
+            '.20': 'title', # svrLogicalDriveDisplayName
         }),
     )
 
@@ -58,9 +57,8 @@ class FujitsuLogicalDiskMap(SnmpPlugin):
 
         for snmpindex, row in tabledata.get(self.snmpEntryName, {}).items():
             om = self.objectMap(row)
-            name = "%s" % getattr(om, self.snmpTitleName)
-            om.id = self.prepId(name)
-            om.title = name
+            om.title = getattr(om, 'title', 'Unknown').replace(' ', '_') or 'Unknown'
+            om.id = self.prepId(om.title)
             om.stripeSize = om.stripeSize / 1024
             om.readMode = self.readModeMap.get(getattr(om, 'readMode', 1),
                                                     'Unknown (%d)'%om.readMode)
@@ -68,6 +66,7 @@ class FujitsuLogicalDiskMap(SnmpPlugin):
                                                     'Unknown (%d)'%om.cacheMode)
             om.snmpindex = snmpindex
             rm.append(om)
+            log.debug('om: %s' % om)
         
         maps.append(rm)
 

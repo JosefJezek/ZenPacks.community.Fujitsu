@@ -54,7 +54,7 @@ DATA = {
         'plural': 'Hard Disks',
         'properties': {
             'badBlocks': addProperty('Bad Blocks', optional=False),
-            'bay': addProperty('Bay'),
+            'bay': addProperty('Bay (Enclosure:Slot)'),
             'capacity': addProperty('Capacity GB', optional=False),
             'errors': addProperty('Errors All', optional=False),
             'firmware': addProperty('Firmware'),
